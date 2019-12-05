@@ -1,0 +1,9 @@
+---
+
+- name: "[RT] Xebault"
+  hosts: localhost
+  tasks:
+    - name: Test value validity
+      assert:
+        that:
+          - xebault_rt_value_enc == xebault_rt_value_dec
