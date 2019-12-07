@@ -4,6 +4,7 @@
   file:
     path: "{{ path_to_installer }}"
     state: directory
+  become: yes
 
 - name: Create network {{ app }}_network
   docker_network:

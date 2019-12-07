@@ -2,16 +2,18 @@
 
 jenkins_version: xeb_specific
 
-path_to_installer: /data/installers/{{ jenkins_version }}/{{ app }}/
+path_to_installer: "{{ installer_base_dir }}/{{ jenkins_version }}/{{ app }}/"
 path_to_volume: /docker/volumes/{{ app }}/jenkins/data
 jenkins_url: http://localhost:{{ jenkins_port }}
 jenkins_container_name: "{{ app }}_jenkins_1"
-jenkins_ref_dir: /usr/share/jenkins/ref
+jenkins_share_dir: /usr/share/jenkins
+jenkins_ref_dir: "{{ jenkins_share_dir }}/ref"
+jenkins_venv_dir: "{{ jenkins_share_dir }}/venv"
 jenkins_ref_files:
   - requirements.txt
   - plugins.txt
-  - vault.key
   - jenkins.yml
+  - selenium_prepare.sh
 jenkins_template_files:
   - Dockerfile
   - docker-compose.yml
@@ -33,8 +35,6 @@ granted_permissions: |
           - Overall/Read:xeboeple
           - Job/Discover:anonymous
           - Overall/Administer:admins
-#          - Overall/Administer:anonymous
-
 
 deploy_job_desc: |
   This is a multipipeline used to deploy the clicker application
@@ -43,7 +43,8 @@ deploy_job_name: ClickerDeploy
 
 # Ldap information
 ldap_server: zigip.hopto.org
-ldap_admin: cn=admin,dc=zigip,dc=hopto,dc=org
+ldap_root: dc=zigip,dc=hopto,dc=org
+ldap_admin: cn=admin,{{ ldap_root }}
 ldap_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           38633735653835373237353464316463653538653661323432316565373831386664633937396532
@@ -52,13 +53,8 @@ ldap_password: !vault |
           6430653934653334350a353437366136623561343064353463393639636235333664376161626234
           31326661653164333432376263623639316139313363616630356432313330396362303738616637
           3335303734366237653030613961373930323861623533636630
-
-ldap_root: dc=zigip,dc=hopto,dc=org
 ldap_user_search_base: ou=people,ou=xebia
 ldap_group_search_base: ou=groups,ou=xebia
-
-clicker_github_repo: https://github.com/Chaest/clicker_xeb
-
 
 # Github information
 github_user: Chaest
@@ -70,5 +66,6 @@ github_token: !vault |
           6332396630356134330a393466393334323665653364353666623037383030613535356566633234
           37626133636333363337383064343865336237386534653161363534343638323932323032646637
           3437373339643539393536396462646464313939616134383665
+clicker_github_repo: https://github.com/Chaest/clicker_xeb
 groovy_libs_branch: master
 groovy_libs_git_repo: https://github.com/Chaest/clicker_groovylibs

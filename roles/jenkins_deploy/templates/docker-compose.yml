@@ -12,7 +12,7 @@ services:
      - jenkins_{{ app }}_data:/var/jenkins_home
     restart: always
     environment:
-     - CASC_JENKINS_CONFIG=/usr/share/jenkins/ref/jenkins.yml
+     - CASC_JENKINS_CONFIG={{ jenkins_ref_dir }}/jenkins.yml
 volumes:
   jenkins_{{ app }}_data:
     driver_opts:

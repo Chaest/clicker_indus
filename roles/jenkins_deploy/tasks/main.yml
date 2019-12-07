@@ -7,6 +7,7 @@
   file:
     path: "{{ path_to_volume }}"
     state: directory
+  become: yes
 
 - name: Tear down existing services
   docker_compose:
@@ -49,5 +50,5 @@
   delegate_to: "{{ groups['jenkins'][0] }}"
   pip:
     requirements: "{{ jenkins_ref_dir }}/requirements.txt"
-    virtualenv: /usr/share/jenkins/venv
+    virtualenv: "{{ jenkins_venv_dir }}"
     virtualenv_python: python

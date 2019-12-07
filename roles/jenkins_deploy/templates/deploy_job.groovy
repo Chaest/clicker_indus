@@ -1,20 +1,23 @@
-multibranchPipelineJob('{{ deploy_job_name }}') {
+pipelineJob('{{ deploy_job_name }}'){
     description '''{{ deploy_job_desc }}'''
-    branchSources {
-        git {
-            id '42'
-            remote '{{ clicker_github_repo }}'
-            credentialsId 'github'
-        }
+    triggers {
+        githubPush()
     }
-    factory {
-        workflowBranchProjectFactory {
-            scriptPath('Jenkinsfile')
-        }
+    properties{
+        githubProjectUrl '{{ clicker_github_repo }}'
     }
-    orphanedItemStrategy {
-        discardOldItems {
-            numToKeep(20)
+    definition {
+        cpsScm {
+            scriptPath 'Jenkinsfile'
+            scm {
+                git {
+                    remote {
+                        url '{{ clicker_github_repo }}'
+                        credentials 'github'
+                    }
+                    branch "*/master"
+                }
+            }
         }
     }
 }
